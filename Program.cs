@@ -5,7 +5,8 @@ using System.Security.AccessControl;
 using System.Xml.XPath;
 using FileMeta;
 
-Converter.Go(@"C:\Users\brand\Source\bredd\CoreStandards\math.xml", @"C:\Users\brand\Source\bredd\CoreStandards\math.csv");
+//Converter.Go(@"C:\Users\brand\Source\bredd\CoreStandards\math.xml", @"C:\Users\brand\Source\bredd\CoreStandards\math.csv");
+Converter.Go(@"C:\Users\brand\Source\bredd\CoreStandards\ela-literacy.xml", @"C:\Users\brand\Source\bredd\CoreStandards\ela-literacy.csv");
 Console.WriteLine("Done.");
 
 
@@ -58,10 +59,15 @@ class Converter
         var level = item.XPVal("StandardHierarchyLevel/number");
         if (string.Equals(level, "2"))
         {
-            var statement = item.XPVal("Statements/Statement");
-            if (statement.EndsWith(c_standardsSuffix))
-                statement = statement.Substring(0, statement.Length - c_standardsSuffix.Length);
-            return "Common Core State Standards for " + statement;
+            switch (item.XPVal("StatementCodes/StatementCode"))
+            {
+                case "CCSS.ELA-Literacy":
+                    return "Common Core State Standards for English Language Arts & Literacy";
+                case "CCSS.Math":
+                    return "Common Core State Standards for Mathematics";
+                default:
+                    throw new ApplicationException("Unexpected subject.");
+            }
         }
         return item.XPVal("StatementCodes/StatementCode");
     }
